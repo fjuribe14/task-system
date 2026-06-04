@@ -8,13 +8,12 @@
   "files": {
     "ignoreUnknown": false,
     "includes": [
-      "src/**",
-      "*.ts",
-      "*.tsx",
-      "*.json",
-      "!node_modules",
-      "!dist",
-      "!tests",
+      "**",
+      "!dist/*",
+      "!node_modules/*",
+      "!.env",
+      "!database/*",
+      "!tests/*",
       "!example",
       "!*.log",
       "!*.sqlite"
@@ -28,7 +27,15 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "nursery": {
+        "noUntrustedLicenses": {
+          "level": "off",
+          "options": {
+            "ignoreDeprecated": true
+          }
+        }
+      }
     }
   },
   "javascript": {
@@ -40,9 +47,7 @@
     "enabled": true,
     "actions": {
       "source": {
-        "organizeImports": "on",
-        "recommended": true,
-        "useSortedAttributes": "on"
+        "organizeImports": "on"
       }
     }
   }
