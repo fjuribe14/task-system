@@ -2,9 +2,9 @@
   "name": "tasks-system",
   "version": "1.0.0",
   "description": "System for manage background tasks",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
-    "dev": "tsup --watch --onSuccess 'node dist/main.js'",
+    "dev": "tsup --watch --onSuccess \"node dist/main.js\"",
     "build": "pnpm check && tsup",
     "start": "node dist/main.js",
     "job:test": "tsup && node dist/main.js --run-test-job",

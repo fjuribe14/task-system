@@ -11,6 +11,7 @@ export default defineConfig({
   platform: "node",
   splitting: false,
   shims: true,
+  minify: true,
   external: [
     "better-sqlite3",
     "croner",
