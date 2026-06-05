@@ -8,8 +8,8 @@
     "build": "pnpm check && tsup",
     "start": "node dist/main.js",
     "job:test": "tsup && node dist/main.js --run-test-job",
-    "format": "biome format --write .",
-    "lint": "biome lint --fix .",
+    "format": "biome check --write .",
+    "lint": "biome check . --fix",
     "check": "npm run lint && npm run format"
   },
   "keywords": [],

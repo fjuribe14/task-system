@@ -1,18 +1,18 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { env } from "@/config/env.js";
-import { JobLog } from "@/entities/JobLog.js";
-import { logger } from "./logger";
-import { TipoCambio } from "@/entities/TipoCambio";
-import { CambioMoneda } from "@/entities/CambioMoneda";
+import { logger } from "@/config/logger";
 import { CambioCostoOperativo } from "@/entities/CambioCostoOperativo";
+import { CambioMoneda } from "@/entities/CambioMoneda";
+import { JobLog } from "@/entities/JobLog.js";
+import { TipoCambio } from "@/entities/TipoCambio";
 
 export const AppDataSource = new DataSource({
   type: "better-sqlite3",
   database: env.dbPath,
   synchronize: true, // solo para desarrollo; en producción usar migraciones
   // logging: env.nodeEnv === "development",
-  entities: [JobLog, TipoCambio],
+  entities: [JobLog, TipoCambio, CambioMoneda, CambioCostoOperativo],
   subscribers: [],
   migrations: [],
 });

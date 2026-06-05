@@ -1,12 +1,12 @@
 import "reflect-metadata";
+import { CloseDataSources, InitDataSources } from "@/config/database.js";
 import { logger } from "@/config/logger.js";
-import { JobLogRepository } from "@/repositories/JobLogRepository.js";
-import { LockService } from "@/services/LockService.js";
-import { JobService } from "@/services/JobService.js";
 import { CronScheduler } from "@/cron/CronScheduler.js";
 // import { TestJob } from "@/jobs/TestJob.js";
 import { ExchangeRatesJob } from "@/jobs/ExchangeRatesJob.js";
-import { CloseDataSources, InitDataSources } from "@/config/database.js";
+import { JobLogRepository } from "@/repositories/JobLogRepository.js";
+import { JobService } from "@/services/JobService.js";
+import { LockService } from "@/services/LockService.js";
 
 // Detectar si se ejecuta manualmente un job específico
 const args = process.argv.slice(2);
@@ -24,9 +24,6 @@ async function bootstrap() {
     const scheduler = new CronScheduler(jobService);
 
     // Registrar jobs
-    // const testJob = new TestJob();
-    // scheduler.registerJob(testJob);
-
     const tipoCambioJob = new ExchangeRatesJob();
     scheduler.registerJob(tipoCambioJob);
 

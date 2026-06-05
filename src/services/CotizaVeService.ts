@@ -1,4 +1,6 @@
+import { endOfDay, startOfDay } from "date-fns";
 import { env } from "@/config/env";
+import { testCotizaVEData } from "@/data";
 import type { CambioCostoOperativo } from "@/entities/CambioCostoOperativo";
 import type { CambioMoneda } from "@/entities/CambioMoneda";
 import type { TipoCambio } from "@/entities/TipoCambio";
@@ -10,7 +12,6 @@ import {
   type TCotizaVeRatesResponseRate,
 } from "@/types/CotizaVe";
 import { monedaEnumObject, type TMoneda } from "@/types/Moneda";
-import { endOfDay, startOfDay } from "date-fns";
 
 export class CotizaVeService {
   private apiUrl: string;
@@ -38,6 +39,10 @@ export class CotizaVeService {
   }
 
   async findAllRates(): Promise<TCotizaVeRatesResponse> {
+    if (env.nodeEnv === "development") {
+      return testCotizaVEData;
+    }
+
     const response = await fetch(
       `${this.apiUrl}${cotizaVeEndpointEnumObject["/rates"]}`,
       {
@@ -48,11 +53,55 @@ export class CotizaVeService {
       },
     );
 
-    return (await response.json()) as TCotizaVeRatesResponse;
+    const rates = (await response.json()) as TCotizaVeRatesResponse;
+
+    if (!this.isRatesValid(rates)) {
+      throw new Error("No se pudieron obtener las tasas de cambio.");
+    }
+
+    return rates;
+  }
+
+  private calculateAverage(rates: TCotizaVeRatesResponseRate[]): string {
+    if (!rates) throw new Error("No se pudieron obtener las tasas de cambio.");
+
+    const filteredRates = rates
+      .filter(
+        (rate) =>
+          rate.market === cotizaVeRatesResponseMarketEnumObject.binance ||
+          rate.market === cotizaVeRatesResponseMarketEnumObject.eur_reference,
+      )
+      .map(({ mid }) => mid);
+
+    const average_price = (
+      filteredRates
+        .filter((value) => value !== null)
+        .reduce((acc, value) => acc + value, 0) / filteredRates.length
+    ).toFixed(2);
+
+    return average_price;
+  }
+
+  private calculateOficialDolarPrice(
+    rates: TCotizaVeRatesResponseRate[],
+  ): number {
+    if (!rates) throw new Error("No se pudieron obtener las tasas de cambio.");
+
+    const oficialDolarPrice = rates.find(
+      (rate) =>
+        rate.type === cotizaVeRatesResponseTypeEnumObject.reference &&
+        rate.market === cotizaVeRatesResponseMarketEnumObject.reference,
+    );
+
+    if (!oficialDolarPrice?.mid) {
+      throw new Error("No se pudo obtener la tasa de cambio oficial.");
+    }
+
+    return Number(oficialDolarPrice.mid);
   }
 
   public castToTipoCambio(rates?: TCotizaVeRatesResponseRate[]): TipoCambio[] {
-    if (!rates) return [];
+    if (!rates) throw new Error("No se pudieron obtener las tasas de cambio.");
 
     return rates
       .filter(
@@ -74,38 +123,37 @@ export class CotizaVeService {
         return {
           moneda,
           valor: Number(mid),
-          fechaRegistro: new Date(),
           fechaModificacion: new Date(),
           fechaValor: startOfDay(String(updated_at)),
         };
       });
   }
 
-  public castToCambioMoneda(
-    rates: TCotizaVeRatesResponseRate[],
-  ): CambioMoneda[] {
-    return rates.map((rate) => ({
-      valorMoneda: Number(rate.bid),
-      fechaFin: endOfDay(String(rate.updated_at)),
-      fechaInicio: startOfDay(String(rate.updated_at)),
-    }));
+  public castToCambioMoneda(rates: TCotizaVeRatesResponseRate[]): CambioMoneda {
+    if (!rates) throw new Error("No se pudieron obtener las tasas de cambio.");
+
+    const { updated_at } = rates[0];
+
+    return {
+      fechaFin: endOfDay(String(updated_at)),
+      fechaInicio: startOfDay(String(updated_at)),
+      valorMoneda: this.calculateOficialDolarPrice(rates),
+    };
   }
 
   public castToCambioCostosOperativos(
     rates: TCotizaVeRatesResponseRate[],
-  ): CambioCostoOperativo[] {
-    if (!rates) return [];
+  ): CambioCostoOperativo {
+    if (!rates) throw new Error("No se pudieron obtener las tasas de cambio.");
 
-    const ratesFiltered = rates.filter(
-      (rate) =>
-        rate?.type?.includes(cotizaVeRatesResponseTypeEnumObject.reference) ||
-        rate?.market?.includes(cotizaVeRatesResponseMarketEnumObject.binance),
-    );
+    const { updated_at } = rates[0];
 
-    return ratesFiltered.map((rate) => ({
-      valorAplicable: Number(rate.bid),
-      fechaFin: endOfDay(String(rate.updated_at)),
-      fechaInicio: startOfDay(String(rate.updated_at)),
-    }));
+    const valorAplicable = Number(this.calculateAverage(rates));
+
+    return {
+      valorAplicable,
+      fechaFin: endOfDay(String(updated_at)),
+      fechaInicio: startOfDay(String(updated_at)),
+    };
   }
 }

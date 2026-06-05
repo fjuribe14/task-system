@@ -1,12 +1,12 @@
-import type { TMoneda } from "#/types/moneda.types.js";
-import { getEnumObjectFromArray } from "#/utils/index.js";
+import type { TMoneda } from "@/types/Moneda";
+import { getEnumObjectFromArray } from "@/utils/enum";
 
 export type DolarAPIRatesResponse = {
   moneda: TMoneda;
   fuente: TFuente;
   nombre: string;
-  compra: number;
-  venta: number;
+  compra: number | null;
+  venta: number | null;
   promedio: number;
   fechaActualizacion: Date;
 };

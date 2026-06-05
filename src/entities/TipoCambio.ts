@@ -1,8 +1,8 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
 } from "typeorm";
@@ -23,8 +23,8 @@ export class TipoCambio {
   fechaValor!: Date;
 
   @CreateDateColumn({ name: "fecha_registro" })
-  fechaRegistro!: Date;
+  fechaRegistro?: Date;
 
-  @UpdateDateColumn({ name: "fecha_modificacion" })
-  fechaModificacion!: Date;
+  @UpdateDateColumn({ name: "fecha_modificacion", nullable: true })
+  fechaModificacion?: Date = new Date();
 }

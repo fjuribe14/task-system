@@ -22,7 +22,10 @@ export class TipoCambioRepository {
     return tipoCambio[0];
   }
 
-  async save(tipoCambio: TipoCambio): Promise<TipoCambio> {
-    return await this.repo.save(tipoCambio);
+  async save(data: TipoCambio[]): Promise<void> {
+    await this.repo.upsert(data, {
+      skipUpdateIfNoValuesChanged: true,
+      conflictPaths: ["moneda", "fechaValor"],
+    });
   }
 }

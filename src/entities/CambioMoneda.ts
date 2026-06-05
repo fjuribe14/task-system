@@ -1,37 +1,39 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
   Unique,
+  UpdateDateColumn,
 } from "typeorm";
 
+export const CambioMonedaUniqueConstraint = ["idTipoMoneda", "fechaInicio"];
+
 @Entity("cambio_moneda")
-@Unique(["idTipoMoneda", "fechaInicio"])
+@Unique(CambioMonedaUniqueConstraint)
 export class CambioMoneda {
   @PrimaryGeneratedColumn()
   id?: number;
 
-  @Column({ name: "id_pais" })
-  idPais?: number = 1;
+  @Column({ name: "id_pais", default: 1 })
+  idPais?: number;
 
-  @Column({ name: "id_tipo_moneda" })
-  idTipoMoneda?: number = 5;
+  @Column({ name: "id_tipo_moneda", nullable: true, default: 5 })
+  idTipoMoneda?: number;
 
   @CreateDateColumn({ name: "fecha_inicio" })
-  fechaInicio?: Date = new Date();
+  fechaInicio!: Date;
 
-  @UpdateDateColumn({ name: "fecha_fin" })
-  fechaFin?: Date = new Date();
+  @UpdateDateColumn({ name: "fecha_fin", nullable: true })
+  fechaFin?: Date;
 
   @Column({ name: "valor_moneda" })
   valorMoneda!: number;
 
-  @Column({ name: "usuario" })
-  usuario?: string = "1";
+  @Column({ name: "usuario", default: "1" })
+  usuario?: string;
 
-  @Column({ name: "valor_moneda_reconversion" })
+  @Column({ name: "valor_moneda_reconversion", nullable: true })
   valorMonedaReconversion?: number;
 }
 

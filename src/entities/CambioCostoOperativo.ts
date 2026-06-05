@@ -1,23 +1,30 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
   Unique,
+  UpdateDateColumn,
 } from "typeorm";
 
+export const CambioCostoOperativoUniqueConstraint = [
+  "fechaInicio",
+  "fechaFin",
+  "idTipoMoneda",
+  "idPais",
+];
+
 @Entity("cambio_costos_operativos")
-@Unique(["idTipoMoneda", "fechaInicio"])
+@Unique(CambioCostoOperativoUniqueConstraint)
 export class CambioCostoOperativo {
   @PrimaryGeneratedColumn()
   id?: number;
 
-  @Column({ name: "id_pais" })
-  idPais?: number = 1;
+  @Column({ name: "id_pais", default: 1 })
+  idPais?: number;
 
-  @Column({ name: "id_tipo_moneda" })
-  idTipoMoneda?: number = 5;
+  @Column({ name: "id_tipo_moneda", default: 5 })
+  idTipoMoneda?: number;
 
   @CreateDateColumn({ name: "fecha_inicio" })
   fechaInicio!: Date;
@@ -28,17 +35,17 @@ export class CambioCostoOperativo {
   @Column({ name: "valor_aplicable" })
   valorAplicable!: number;
 
-  @Column({ name: "hecho_por" })
-  hechoPor?: string = "1";
+  @Column({ name: "hecho_por", default: "1" })
+  hechoPor?: string;
 
   @CreateDateColumn({ name: "fecha_registro" })
-  fechaRegistro?: Date = new Date();
+  fechaRegistro?: Date;
 
-  @Column({ name: "modificado_por" })
-  modificadoPor?: string = "1";
+  @Column({ name: "modificado_por", default: "1" })
+  modificadoPor?: string;
 
   @UpdateDateColumn({ name: "fecha_modificado" })
-  fechaModificado?: Date = new Date();
+  fechaModificado?: Date;
 }
 
 // CREATE TABLE qualitasassistance_com_sql.dbo.cambio_costos_operativos (

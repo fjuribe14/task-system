@@ -1,7 +1,7 @@
 import { env } from "@/config/env";
 import { logger } from "@/config/logger.js";
-import type { TJob } from "@/types/Job.js";
 import { ExchangeRatesRepository } from "@/repositories/ExchangeRates";
+import type { TJob } from "@/types/Job.js";
 
 export class ExchangeRatesJob implements TJob {
   public name = "ExchangeRatesJob";
@@ -14,21 +14,10 @@ export class ExchangeRatesJob implements TJob {
 
   async execute(): Promise<void> {
     try {
-      logger.info(
-        `${this.name}: Iniciando obtencion de tasa de cambio en ${env.cronSchedule}`,
-      );
-
+      logger.info(`${this.name}: Iniciando...`);
       const rates = await this.repo.findAllRates();
       await this.repo.saveAllRates(rates);
-      // fetch(
-      //   "https://api.apis.gob.mx/v1/denue/v1/consultas/consulta-geometria/vgr?format=json",
-      // )
-      //   .then((res) => res.json())
-      //   .then((data) => {
-      //     console.log(data);
-      //   });
-
-      logger.info(`${this.name}: proceso completado exitosamente`);
+      logger.info(`${this.name}: Tasa de cambio guardada exitosamente`);
     } catch (error) {
       logger.error(`${this.name}: proceso fallido`, error);
     }
