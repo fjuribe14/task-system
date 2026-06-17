@@ -20,13 +20,6 @@ export class JobService {
       return;
     }
 
-    // Log start
-    const _startLog = await this.jobLogRepo.create({
-      jobName,
-      status: "started",
-      message: "Job started",
-    });
-
     try {
       logger.info(`Executing job: ${jobName}`);
       await jobLogic();

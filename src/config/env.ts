@@ -5,6 +5,7 @@ export const env = {
   cronSchedule: process.env.CRON_SCHEDULE || "* * * * *",
   dbPath: process.env.DB_PATH || "database/db.sqlite",
   logLevel: process.env.LOG_LEVEL || "info",
+  sentryDns: process.env.SENTRY_DNS,
 
   // SQL Server config
   sqlSrvHost: process.env.SQL_SRV_HOST,

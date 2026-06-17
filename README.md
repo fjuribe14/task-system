@@ -18,22 +18,22 @@ Servicio programador de tareas (cron daemon) encargado de la obtención y sincro
 
 El proyecto sigue una arquitectura desacoplada y modular. A continuación se detallan los directorios y archivos principales:
 
-- **[src/index.ts](file:///c:/Users/fernando.uribe/Documents/dev/task-scheduler/src/index.ts)**: Punto de entrada de la aplicación. Se encarga de inicializar Sentry y arrancar las tareas programadas (Jobs).
+- **[src/index.ts](src/index.ts)**: Punto de entrada de la aplicación. Se encarga de inicializar Sentry y arrancar las tareas programadas (Jobs).
 - **`src/config/`**: Inicialización de configuraciones base.
-  - **[database.ts](file:///c:/Users/fernando.uribe/Documents/dev/task-scheduler/src/config/database.ts)**: Configuración condicional del driver y cliente de la base de datos (MSSQL o LibSQL/SQLite) según el proveedor.
-  - **[logger.ts](file:///c:/Users/fernando.uribe/Documents/dev/task-scheduler/src/config/logger.ts)**: Configuración de Winston para salidas a consola coloreadas y escritura rotativa de archivos diarios en la carpeta raíz `/log/<YYYY-MM-DD>.log`.
-  - **[sentry.ts](file:///c:/Users/fernando.uribe/Documents/dev/task-scheduler/src/config/sentry.ts)**: Integración para el reporte de excepciones en tiempo real.
+  - **[database.ts](src/config/database.ts)**: Configuración condicional del driver y cliente de la base de datos (MSSQL o LibSQL/SQLite) según el proveedor.
+  - **[logger.ts](src/config/logger.ts)**: Configuración de Winston para salidas a consola coloreadas y escritura rotativa de archivos diarios en la carpeta raíz `/log/<YYYY-MM-DD>.log`.
+  - **[sentry.ts](src/config/sentry.ts)**: Integración para el reporte de excepciones en tiempo real.
 - **`src/jobs/`**: Tareas programadas en el backend.
-  - **[base.job.ts](file:///c:/Users/fernando.uribe/Documents/dev/task-scheduler/src/jobs/base.job.ts)**: Clase abstracta `Job` que inicializa cron y encapsula el manejo de errores (Sentry) y de logs (Winston).
-  - **[exchange_rates.job.ts](file:///c:/Users/fernando.uribe/Documents/dev/task-scheduler/src/jobs/exchange/exchange_rates.job.ts)**: Job que ejecuta periódicamente la actualización de tasas de cambio de divisas.
+  - **[base.job.ts](src/jobs/base.job.ts)**: Clase abstracta `Job` que inicializa cron y encapsula el manejo de errores (Sentry) y de logs (Winston).
+  - **[exchange_rates.job.ts](src/jobs/exchange/exchange_rates.job.ts)**: Job que ejecuta periódicamente la actualización de tasas de cambio de divisas.
 - **`src/services/`**: Lógica de negocio y persistencia en base de datos.
-  - **[tipo_cambio.service.ts](file:///c:/Users/fernando.uribe/Documents/dev/task-scheduler/src/services/tipo_cambio.service.ts)**: Lógica CRUD para la tabla `tipo_cambio`.
-  - **[cambio_moneda.service.ts](file:///c:/Users/fernando.uribe/Documents/dev/task-scheduler/src/services/cambio_moneda.service.ts)**: Lógica CRUD para la tabla `cambio_moneda`.
-  - **[cambio_costos_operativos.service.ts](file:///c:/Users/fernando.uribe/Documents/dev/task-scheduler/src/services/cambio_costos_operativos.service.ts)**: Lógica CRUD para la tabla `cambio_costos_operativos`.
+  - **[tipo_cambio.service.ts](src/services/tipo_cambio.service.ts)**: Lógica CRUD para la tabla `tipo_cambio`.
+  - **[cambio_moneda.service.ts](src/services/cambio_moneda.service.ts)**: Lógica CRUD para la tabla `cambio_moneda`.
+  - **[cambio_costos_operativos.service.ts](src/services/cambio_costos_operativos.service.ts)**: Lógica CRUD para la tabla `cambio_costos_operativos`.
   - **`exchange/`**: Adaptadores y consumos de APIs externas:
-    - **[cotizave.service.ts](file:///c:/Users/fernando.uribe/Documents/dev/task-scheduler/src/services/exchange/cotizave.service.ts)**: Servicio cliente de CotizaVe.
-    - **[dolarapi.service.ts](file:///c:/Users/fernando.uribe/Documents/dev/task-scheduler/src/services/exchange/dolarapi.service.ts)**: Servicio cliente de DolarAPI.
-    - **[exchange_manager.service.ts](file:///c:/Users/fernando.uribe/Documents/dev/task-scheduler/src/services/exchange/exchange_manager.service.ts)**: Orquestador que intenta consumir CotizaVe como canal principal y aplica un fallback automático hacia DolarAPI ante fallos.
+    - **[cotizave.service.ts](src/services/exchange/cotizave.service.ts)**: Servicio cliente de CotizaVe.
+    - **[dolarapi.service.ts](src/services/exchange/dolarapi.service.ts)**: Servicio cliente de DolarAPI.
+    - **[exchange_manager.service.ts](src/services/exchange/exchange_manager.service.ts)**: Orquestador que intenta consumir CotizaVe como canal principal y aplica un fallback automático hacia DolarAPI ante fallos.
 - **`src/schemas/`**: Mapeo de bases de datos utilizando el ORM Drizzle.
   - **`mssql/`**: Mapeo para SQL Server.
 - **`src/types/`**: Definición de interfaces y contratos en TypeScript.

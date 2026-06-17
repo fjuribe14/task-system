@@ -10,13 +10,21 @@
     "job:test": "tsup && node dist/main.js --run-test-job",
     "format": "biome check --write .",
     "lint": "biome check . --fix",
-    "check": "npm run lint && npm run format"
+    "check": "npm run lint && npm run format",
+    "pm2:start": "pm2 start dist/main.js --name task-scheduler --env production --max-memory-restart 1G",
+    "pm2:stop": "pm2 stop task-scheduler",
+    "pm2:restart": "pm2 restart task-scheduler",
+    "pm2:delete": "pm2 delete task-scheduler",
+    "pm2:list": "pm2 list",
+    "pm2:save": "pm2 save",
+    "pm2:monit": "pm2 monit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@sentry/node": "^10.58.0",
     "better-sqlite3": "^12.10.0",
     "croner": "^10.0.1",
     "date-fns": "^4.4.0",

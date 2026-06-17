@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import { env } from "@/config/env";
 import { logger } from "@/config/logger.js";
 import { ExchangeRatesRepository } from "@/repositories/ExchangeRates";
@@ -19,6 +20,7 @@ export class ExchangeRatesJob implements TJob {
       await this.repo.saveAllRates(rates);
       logger.info(`${this.name}: Tasa de cambio guardada exitosamente`);
     } catch (error) {
+      Sentry.captureException(error);
       logger.error(`${this.name}: proceso fallido`, error);
     }
   }

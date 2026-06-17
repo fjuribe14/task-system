@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import * as Sentry from "@sentry/node";
 import { DataSource } from "typeorm";
 import { env } from "@/config/env.js";
 import { logger } from "@/config/logger";
@@ -70,6 +71,7 @@ export async function CloseDataSources() {
     ]);
     logger.info("DataSources cerradas exitosamente");
   } catch (error) {
+    Sentry.captureException(error);
     logger.error("Error al cerrar las conexiones a las bases de datos", error);
   }
 }
